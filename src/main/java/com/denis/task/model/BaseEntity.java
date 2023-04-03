@@ -56,4 +56,7 @@ public abstract class BaseEntity implements Persistable<Integer>{
         return getClass().getSimpleName() + ":" + id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
