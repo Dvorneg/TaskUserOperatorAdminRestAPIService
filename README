@@ -1,0 +1,17 @@
+http://localhost:8080/api/app
+user
+password
+
+
+localhost:8080/api/app?page=1&app_per_page=1&sort_by=false
+
+
+localhost:8080/api/app/add
+{
+    "message":"новая заявка черновик"
+}
+
+localhost:8080/api/app/3
+{
+    "message":"ИСПРАВЛЕНВА! заявка черновик User"
+}
