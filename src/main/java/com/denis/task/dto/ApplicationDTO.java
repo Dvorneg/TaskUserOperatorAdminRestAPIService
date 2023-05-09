@@ -1,20 +1,22 @@
 package com.denis.task.dto;
 
-import com.denis.task.model.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import javax.persistence.*;
 
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ApplicationDTO {
+    private String message;
 
 /*    @Enumerated(EnumType.STRING)
     private Status status;*/
 
-    private String message;
+
+    public ApplicationDTO(String message) {
+        this.message = message;
+    }
 
 }

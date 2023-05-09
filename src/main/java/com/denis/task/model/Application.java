@@ -2,6 +2,7 @@ package com.denis.task.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -28,4 +29,10 @@ public class Application extends BaseEntity{
     @Column(name = "application_date_time")
     private LocalDateTime applicationDateTime;
 
+/*    public Application(User user, Status status, String message, LocalDateTime applicationDateTime) {
+        this.user = user;
+        this.status = status;
+        this.message = message;
+        this.applicationDateTime = applicationDateTime;
+    }*/
 }

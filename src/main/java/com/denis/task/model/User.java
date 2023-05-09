@@ -1,6 +1,8 @@
 package com.denis.task.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
@@ -64,9 +66,10 @@ public class User extends BaseEntity implements Serializable {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonBackReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderBy("applicationDateTime DESC")
+    //@JsonIgnore
     private List<Application> applicationList;
 
 
@@ -87,7 +90,6 @@ public class User extends BaseEntity implements Serializable {
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
-
 
     @Override
     public String toString() {

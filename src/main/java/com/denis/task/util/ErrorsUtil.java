@@ -15,7 +15,7 @@ public class ErrorsUtil {
                     .append(" - ").append(error.getDefaultMessage() == null ? error.getCode(): error.getDefaultMessage())
                     .append(";");
         }
-        throw new ApplicationtException(errorMsg.toString());
+        throw new ApplicationException(errorMsg.toString());
 
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,10 +34,25 @@ public class ApplicationService {
     }
 
     @Transactional
-    public void updateApplication(Application application, Integer Userid) {
+    public void updateApplication(Application application, Integer userId) {
         enrichApplication(application);
         //todo validate user
         applicationRepository.save(application);
+    }
+
+
+    @Transactional
+    public void send(Integer applicationId, Integer userId) {
+        Application application=applicationRepository.getById(applicationId);
+        application.setStatus(Status.SEND);
+        //todo validate user
+        applicationRepository.save(application);
+    }
+
+    public Optional<Application> getApplication(Integer applicationId, Integer userId) {
+        //enrichApplication(application);
+        //todo validate user
+        return applicationRepository.findById(applicationId);
     }
 
     public List<Application> findWithPagination(Integer page, Integer appPerPage, boolean sortByASC){
@@ -52,5 +68,6 @@ public class ApplicationService {
         application.setApplicationDateTime(LocalDateTime.now());
         application.setStatus(Status.DRAFT);
     }
+
 
 }

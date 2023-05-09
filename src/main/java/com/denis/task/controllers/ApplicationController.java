@@ -2,15 +2,14 @@ package com.denis.task.controllers;
 
 import com.denis.task.dto.ApplicationDTO;
 import com.denis.task.model.Application;
-import com.denis.task.model.User;
 import com.denis.task.security.UserDetailsImpl;
 import com.denis.task.service.ApplicationService;
-import com.denis.task.util.ApplicationtException;
+import com.denis.task.util.ApplicationErrorResponse;
+import com.denis.task.util.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 import static com.denis.task.util.ErrorsUtil.returnErrorsToClient;
 
@@ -43,7 +43,6 @@ public class ApplicationController {
     {
         return  applicationService.findWithPagination(page, appPerPage,sortBy);
     }
-
 
     @PostMapping("/add")
     //public ResponseEntity<HttpStatus> add(@AuthenticationPrincipal User user ,@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult) {
@@ -77,8 +76,44 @@ public class ApplicationController {
         return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ApplicationDTO> get(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable int id) {
+        int userId = userDetails.getUser().id();
+
+        Optional<Application> optionalApplication = applicationService.getApplication(id, userId);
+
+        if (optionalApplication.isPresent()) {
+            return ResponseEntity.of( (optionalApplication.map(this::convertToApplicationDTO)));
+        }
+        else
+            throw new ApplicationException("Don't found app with id="+ id);
+
+        //applicationService.updateApplication(applicationtToAdd, userId);
+        //return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
+    }
+
+    @GetMapping("/send/{id}")
+    public ResponseEntity<HttpStatus> send(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable int id) {
+        int userId = userDetails.getUser().id();
+        applicationService.send(id, userId);
+        return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
+    }
+
     private Application convertToApplication(ApplicationDTO applicationDTO) {
         return modelMapper.map(applicationDTO, Application.class);
     }
 
+    private ApplicationDTO convertToApplicationDTO(Application application){
+        return modelMapper.map(application, ApplicationDTO.class);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ApplicationErrorResponse> handleException(ApplicationException e){
+
+        ApplicationErrorResponse response = new ApplicationErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST );  //400, BAD_REQUEST
+    }
 }
