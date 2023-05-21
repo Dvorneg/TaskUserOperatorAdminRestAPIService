@@ -45,6 +45,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     //public ResponseEntity<HttpStatus> add(@AuthenticationPrincipal User user ,@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult) {
     public ResponseEntity<HttpStatus> add(@RequestBody @Valid ApplicationDTO applicationDTO, BindingResult bindingResult) {
 
@@ -54,7 +55,8 @@ public class ApplicationController {
             returnErrorsToClient(bindingResult);
 
         applicationService.createApplication(applicationtToAdd);
-        return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
+        //return ResponseEntity.isOk(HttpStatus.OK);  //<> ok status 200
+        return new ResponseEntity<>(HttpStatus.CREATED);  //<> CREATED status 201
     }
 
     @PutMapping(value = "/{id}")
@@ -80,16 +82,18 @@ public class ApplicationController {
     public ResponseEntity<ApplicationDTO> get(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable int id) {
         int userId = userDetails.getUser().id();
 
-        Optional<Application> optionalApplication = applicationService.getApplication(id, userId);
+        Application application = applicationService.getApplication(id, userId);
+        return ResponseEntity.ok(convertToApplicationDTO(application));  //<> ok status 200
 
+/*        Optional<Application> optionalApplication = applicationService.getApplication(id, userId);
         if (optionalApplication.isPresent()) {
             return ResponseEntity.of( (optionalApplication.map(this::convertToApplicationDTO)));
         }
         else
-            throw new ApplicationException("Don't found app with id="+ id);
-
+            throw new ApplicationException("Don't found app with id="+ id);*/
         //applicationService.updateApplication(applicationtToAdd, userId);
         //return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
+
     }
 
     @GetMapping("/send/{id}")
@@ -111,9 +115,11 @@ public class ApplicationController {
     private ResponseEntity<ApplicationErrorResponse> handleException(ApplicationException e){
 
         ApplicationErrorResponse response = new ApplicationErrorResponse(
-                e.getMessage(),
-                System.currentTimeMillis()
+                e.getMessage()
+                //System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST );  //400, BAD_REQUEST
     }
+
+
 }

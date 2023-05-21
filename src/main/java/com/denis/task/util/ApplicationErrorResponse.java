@@ -1,13 +1,13 @@
 package com.denis.task.util;
 
-public class ApplicationErrorResponse {
+public class ApplicationErrorResponse{
 
     private String message;
     private long timestamp;
 
-    public ApplicationErrorResponse(String message, long timestamp) {
+    public ApplicationErrorResponse(String message) {
         this.message = message;
-        this.timestamp = timestamp;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public String getMessage() {

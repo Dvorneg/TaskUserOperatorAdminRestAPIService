@@ -1,9 +1,14 @@
 package com.denis.task.service;
 
 import com.denis.task.model.Application;
+import com.denis.task.model.Role;
 import com.denis.task.model.Status;
+import com.denis.task.model.User;
 import com.denis.task.repository.ApplicationRepository;
+import com.denis.task.repository.UserRepository;
 import com.denis.task.security.UserDetailsImpl;
+import com.denis.task.util.ApplicationErrorResponse;
+import com.denis.task.util.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,10 +26,12 @@ import java.util.Optional;
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository) {
         this.applicationRepository = applicationRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -37,6 +44,7 @@ public class ApplicationService {
     public void updateApplication(Application application, Integer userId) {
         enrichApplication(application);
         //todo validate user
+
         applicationRepository.save(application);
     }
 
@@ -49,10 +57,22 @@ public class ApplicationService {
         applicationRepository.save(application);
     }
 
-    public Optional<Application> getApplication(Integer applicationId, Integer userId) {
+    public Application getApplication(Integer applicationId, Integer userId) {
         //enrichApplication(application);
         //todo validate user
-        return applicationRepository.findById(applicationId);
+        User user = userRepository.getById(userId);
+        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+        if (optionalApplication.isPresent())
+        {
+            //user ok
+            if (optionalApplication.get().getUser().id()==userId || user.getRoles().contains(Role.OPERATOR))
+                return optionalApplication.get();
+            else  {
+                 throw new ApplicationException("Нет доступа к выбранной заявке!");
+            }
+        }
+        throw new ApplicationException("Не найдена заявка по номеру:"+applicationId);
+        //return null; //TODO What return, if code will never be called?
     }
 
     public List<Application> findWithPagination(Integer page, Integer appPerPage, boolean sortByASC){

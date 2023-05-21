@@ -13,5 +13,5 @@ localhost:8080/api/app/add
 
 localhost:8080/api/app/3
 {
-    "message":"ИСПРАВЛЕНВА! заявка черновик User"
+    "message":"ИСПРАВЛЕНА! заявка черновик User"
 }
