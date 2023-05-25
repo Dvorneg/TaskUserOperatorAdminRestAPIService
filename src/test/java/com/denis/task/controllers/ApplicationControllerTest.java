@@ -62,6 +62,16 @@ class ApplicationControllerTest extends AbstractControllerTest{
                 .andExpect(content().json("{\"message\":\"Не найдена заявка по номеру:200\"}"));
     }
 
+    @Test
+    void getWithPagination() throws Exception {
+        perform(MockMvcRequestBuilders.get("/api/app?page=1&sortASC=false")
+                .with(httpBasic("Operator", "password"))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":1,\"status\":\"DRAFT\",\"message\":\"Перезвоните срочно! Как можно не работать в выходные!\",\"applicationDateTime\":\"2020-01-30T10:00:00\"}]"));
+    }
+
 
     @Test
     void NewApplication() throws Exception {

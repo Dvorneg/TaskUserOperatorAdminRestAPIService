@@ -66,7 +66,7 @@ public class User extends BaseEntity implements Serializable {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonBackReference
+    @JsonManagedReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderBy("applicationDateTime DESC")
     //@JsonIgnore

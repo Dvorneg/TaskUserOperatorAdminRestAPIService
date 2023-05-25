@@ -38,10 +38,11 @@ public class ApplicationController {
     @GetMapping()
     public List<Application> getApplications(
             @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "app_per_page", required = false) Integer appPerPage,
-            @RequestParam(value = "sortByASC", required = false) boolean sortBy)
+            //@RequestParam(value = "app_per_page", required = false) Integer appPerPage,
+            @RequestParam(value = "sortASC", required = false) boolean sortASC)
     {
-        return  applicationService.findWithPagination(page, appPerPage,sortBy);
+        Integer appPerPage = 5;
+        return  applicationService.findWithPagination(page, appPerPage, sortASC);
     }
 
     @PostMapping("/add")
