@@ -75,7 +75,6 @@ class ApplicationControllerTest extends AbstractControllerTest{
 
     @Test
     void NewApplication() throws Exception {
-
         //ApplicationDTO applicationDTO = new ApplicationDTO("новая заявка черновик");
         perform(MockMvcRequestBuilders.post("/api/app/add")
                 .with(httpBasic("User", "password"))
@@ -83,7 +82,6 @@ class ApplicationControllerTest extends AbstractControllerTest{
                 //.content(String.valueOf(applicationDTO)))
                 .content("{\"message\":\"новая заявка черновик\"}"))
                 .andExpect(status().isCreated());
-
         //Assertions.assertMatch(mealRepository.getById(MEAL1_ID), updated);
     }
 
@@ -91,14 +89,11 @@ class ApplicationControllerTest extends AbstractControllerTest{
     public void UserNotAutorized() throws Exception {
         ApplicationDTO applicationDTO = new ApplicationDTO("новая заявка черновик");
         //application.setMessage();
-
         perform(MockMvcRequestBuilders.post("/api/app/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(applicationDTO)))
                 .andExpect(status().isUnauthorized());
-
     }
-
 
 
     @Test
@@ -127,12 +122,9 @@ class ApplicationControllerTest extends AbstractControllerTest{
 
     //Send app to operator Status.SEND
     @Test
-    void send() throws Exception {
-
+    void sendUser() throws Exception {
         Integer applicationId = 2;
-        //ApplicationDTO applicationDTO = new ApplicationDTO("новая заявка черновик");
-        //String json = new ObjectMapper(). writeValueAsString (applicationDTO);
-        Application applicationBefore=applicationService.getApplication(applicationId, 2);
+        Application applicationBefore=applicationService.getApplication(applicationId, 1);
         Assertions.assertEquals(applicationBefore.getStatus(),Status.DRAFT);
 
         perform(MockMvcRequestBuilders.get("/api/app/send/"+applicationId)
@@ -140,8 +132,23 @@ class ApplicationControllerTest extends AbstractControllerTest{
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Application application=applicationService.getApplication(applicationId, 2);
+        Application application=applicationService.getApplication(applicationId, 1);
         Assertions.assertEquals(application.getStatus(),Status.SEND);
+    }
 
+    @Test
+    void sendOperator() throws Exception {
+        Integer applicationId = 2;
+        Application applicationBefore=applicationService.getApplication(applicationId, 2);
+        Assertions.assertEquals(applicationBefore.getStatus(),Status.DRAFT);
+
+        perform(MockMvcRequestBuilders.get("/api/app/send/"+applicationId)
+                .with(httpBasic("Operator", "password"))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json("{\"message\":\"Только пользователь может отправить свою заявку из статуса черновик!\"}"));
+
+        Application application=applicationService.getApplication(applicationId, 2);
+        Assertions.assertEquals(application.getStatus(),Status.DRAFT);
     }
 }

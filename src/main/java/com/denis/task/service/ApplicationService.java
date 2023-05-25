@@ -7,7 +7,6 @@ import com.denis.task.model.User;
 import com.denis.task.repository.ApplicationRepository;
 import com.denis.task.repository.UserRepository;
 import com.denis.task.security.UserDetailsImpl;
-import com.denis.task.util.ApplicationErrorResponse;
 import com.denis.task.util.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -52,10 +51,17 @@ public class ApplicationService {
 
     @Transactional
     public void send(Integer applicationId, Integer userId) {
-        Application application=applicationRepository.getById(applicationId);
-        application.setStatus(Status.SEND);
-        //todo validate user
-        applicationRepository.save(application);
+
+        User user = userRepository.getById(userId);
+        Application application = applicationRepository.getById(applicationId);
+
+        if (user.getRoles().contains(Role.USER) && application.getUser().id() == userId && application.getStatus()== Status.DRAFT) {
+            application.setStatus(Status.SEND);
+            applicationRepository.save(application);
+        } else {
+            throw new ApplicationException("Только пользователь может отправить свою заявку из статуса черновик!");
+        }
+
     }
 
     public Application getApplication(Integer applicationId, Integer userId) {
