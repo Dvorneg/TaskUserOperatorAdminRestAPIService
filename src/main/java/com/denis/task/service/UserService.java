@@ -3,7 +3,6 @@ package com.denis.task.service;
 import com.denis.task.model.Role;
 import com.denis.task.model.User;
 import com.denis.task.repository.UserRepository;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +21,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    //TODO а на до ли эту хрень?*
+    //use?
     public User get(Integer userId){
         return userRepository.getById(userId);
     }
 
+    @Transactional
     public List<User> getAll(Integer userId) {
-        //toDo проверка что пользователь админ
+        //проверка, что пользователь админ
+        System.out.println("getAll SERVice userId="+userId);
         User user = userRepository.getById(userId);
+        //Hibernate.initialize(user.getRoles());
         if (user.getRoles().contains(Role.ADMIN))
             return userRepository.findAll();
         else

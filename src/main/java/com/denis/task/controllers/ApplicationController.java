@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 import static com.denis.task.util.ErrorsUtil.returnErrorsToClient;
 
@@ -68,13 +67,7 @@ public class ApplicationController {
         applicationtToAdd.setId(id);
         int userId = userDetails.getUser().id();
         log.info("update {} for user {}", applicationDTO, userId);
-
-/*        if (applicationtToAdd.isNew()) {
-            applicationtToAdd.setId(id);
-        } else if (applicationtToAdd.id() != id) {
-            throw new ApplicationtException(bean.getClass().getSimpleName() + " must has id=" + id);
-        }*/
-        //repository.checkBelong(id, userId);
+        // throw new ApplicationtException(bean.getClass().getSimpleName() + " must has id=" + id);
         applicationService.updateApplication(applicationtToAdd, userId);
         return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
     }
@@ -85,16 +78,8 @@ public class ApplicationController {
 
         Application application = applicationService.getApplication(id, userId);
         return ResponseEntity.ok(convertToApplicationDTO(application));  //<> ok status 200
-
-/*        Optional<Application> optionalApplication = applicationService.getApplication(id, userId);
-        if (optionalApplication.isPresent()) {
-            return ResponseEntity.of( (optionalApplication.map(this::convertToApplicationDTO)));
-        }
-        else
-            throw new ApplicationException("Don't found app with id="+ id);*/
-        //applicationService.updateApplication(applicationtToAdd, userId);
-        //return ResponseEntity.ok(HttpStatus.OK);  //<> ok status 200
-
+        //    return ResponseEntity.of( (optionalApplication.map(this::convertToApplicationDTO)));
+       //     throw new ApplicationException("Don't found app with id="+ id);*/
     }
 
     @GetMapping("/send/{id}")

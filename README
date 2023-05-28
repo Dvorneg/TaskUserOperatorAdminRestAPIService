@@ -3,12 +3,11 @@ user
 password
 
 
-- localhost:8080/api/app?page=1&app_per_page=1&sort_by=false
+Получить пользователей
+http://localhost:8080/api/users
 
 Получить первые 5 записей:
 http://localhost:8080/api/app?page=0&sortASC=false
-
-
 
 
 localhost:8080/api/app/add
