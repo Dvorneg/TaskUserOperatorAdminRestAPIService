@@ -110,12 +110,6 @@ class ApplicationControllerTest extends AbstractControllerTest{
                 .andExpect(status().isCreated());
     }
 
-    @Disabled("А надо ли обновлять по тз?")
-    @Test
-    void update() {
-
-    }
-
  /*   @Test
     void get() {getApplications  }*/
 
@@ -151,4 +145,41 @@ class ApplicationControllerTest extends AbstractControllerTest{
         Application application=applicationService.getApplication(applicationId, 2);
         Assertions.assertEquals(application.getStatus(),Status.DRAFT);
     }
+
+    @Test
+    void updateApplicationUser() throws Exception {
+        Integer applicationId = 2;
+        Application applicationBefore = applicationService.getApplication(applicationId, 1);
+        Assertions.assertEquals(applicationBefore.getStatus(), Status.DRAFT);
+        perform(MockMvcRequestBuilders.put("/api/app/" + applicationId)
+                .with(httpBasic("User", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content( "{\"message\":\"Исправлено!\"}"))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+        Application application = applicationService.getApplication(applicationId, 1);
+        Assertions.assertEquals(application.getStatus(), Status.DRAFT);
+        System.out.println(application.getMessage());
+        Assertions.assertEquals(application, applicationBefore);
+    }
+
+    @Test
+    void updateApplicationOperator() throws Exception {
+        Integer applicationId = 2;
+        Application applicationBefore = applicationService.getApplication(applicationId, 2);
+        Assertions.assertEquals(applicationBefore.getStatus(), Status.DRAFT);
+        //applicationBefore.setMessage("Исправлено");
+        perform(MockMvcRequestBuilders.put("/api/app/" + applicationId)
+                .with(httpBasic("Operator", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content( "{\"message\":\"Исправлено!\"}"))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+
+        Application application = applicationService.getApplication(applicationId, 2);
+        Assertions.assertEquals(application.getStatus(), Status.DRAFT);
+        Assertions.assertEquals(application, applicationBefore);
+    }
+
 }

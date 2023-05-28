@@ -43,9 +43,16 @@ public class ApplicationService {
     @Transactional
     public void updateApplication(Application application, Integer userId) {
         enrichApplication(application);
-        //todo validate user
+        User user = userRepository.getById(userId);
+        //Application application = applicationRepository.getById(applicationId);
 
-        applicationRepository.save(application);
+        if (user.getRoles().contains(Role.USER) && application.getUser().id() == userId && application.getStatus()== Status.DRAFT) {
+            applicationRepository.save(application);
+        } else {
+            throw new ApplicationException("Только пользователь может изменять свою заявку из статуса черновик!");
+        }
+
+        //applicationRepository.save(application);
     }
 
 
@@ -79,7 +86,7 @@ public class ApplicationService {
             }
         }
         throw new ApplicationException("Не найдена заявка по номеру:"+applicationId);
-        //return null; //TODO What return, if code will never be called?
+        //return null;
     }
 
     public List<Application> findWithPagination(Integer page, Integer appPerPage, boolean sortByASC){
@@ -91,6 +98,7 @@ public class ApplicationService {
             applicationList= applicationRepository.findAll(PageRequest.of(page, appPerPage, Sort.by(Sort.Direction.DESC,"applicationDateTime"))).getContent();
 
         return applicationList;
+        //todo replace dto?
     }
 
     private void enrichApplication(Application application) {
