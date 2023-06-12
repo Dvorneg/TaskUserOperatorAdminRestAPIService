@@ -35,6 +35,12 @@ public class Application extends BaseEntity{
     @Column(name = "application_date_time")
     private LocalDateTime applicationDateTime;
 
+    public boolean isSendStatus() {
+        if (status==Status.SEND)
+            return true;
+        else
+            return false;
+    }
 /*    public Application(User user, Status status, String message, LocalDateTime applicationDateTime) {
         this.user = user;
         this.status = status;

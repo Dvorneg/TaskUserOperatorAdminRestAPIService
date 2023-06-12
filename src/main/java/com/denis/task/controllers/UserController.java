@@ -30,7 +30,6 @@ public class UserController {
     @GetMapping()
     public List<User> getAll(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         int userId = userDetails.getUser().id();
-        //Hibernate.initialize(result.getIngredients());
         return userService.getAll(userId);
     }
 

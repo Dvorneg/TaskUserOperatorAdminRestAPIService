@@ -19,27 +19,25 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
-//@Slf4j
 //@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    private final UserDetailsService userDetailsService ;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    //Настраивает аутентификацию
+    //authenticated option
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                auth
-            .userDetailsService(userDetailsService)
-                //.passwordEncoder(getPasswordEncoder());//кодиров
-                .passwordEncoder(PASSWORD_ENCODER);//кодиров
-                    //    .passwordEncoder(new BCryptPasswordEncoder());
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(PASSWORD_ENCODER);
+        //    .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -58,17 +56,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-/*    @Bean
-    @Override
-    // https://stackoverflow.com/a/70176629/548473
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        return super.userDetailsServiceBean();
-    }*/
-
-/*    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }*/
 
 }

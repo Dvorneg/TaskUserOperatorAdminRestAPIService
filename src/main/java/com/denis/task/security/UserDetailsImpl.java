@@ -25,7 +25,6 @@ public class UserDetailsImpl implements UserDetails {
         for (Role role : user.getRoles()) {
             //grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
             list.add(new SimpleGrantedAuthority("ROLE_" + role));
-            //System.out.println(role);
         }
 
         //list.add(new SimpleGrantedAuthority("ROLE_" + role));
@@ -64,7 +63,7 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    //Нужно, чтобы получать данные аутентифицированного пользователя
+    //get user authenticated user
     public User getUser(){
         return this.user;
     }

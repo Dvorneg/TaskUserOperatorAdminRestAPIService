@@ -26,12 +26,10 @@ public class UserService {
         return userRepository.getById(userId);
     }
 
+
     @Transactional
     public List<User> getAll(Integer userId) {
-        //проверка, что пользователь админ
-        System.out.println("getAll SERVice userId="+userId);
         User user = userRepository.getById(userId);
-        //Hibernate.initialize(user.getRoles());
         if (user.getRoles().contains(Role.ADMIN))
             return userRepository.findAll();
         else
