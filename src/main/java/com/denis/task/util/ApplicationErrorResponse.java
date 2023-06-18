@@ -1,5 +1,11 @@
 package com.denis.task.util;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ApplicationErrorResponse{
 
     private String message;
@@ -10,7 +16,7 @@ public class ApplicationErrorResponse{
         this.timestamp = System.currentTimeMillis();
     }
 
-    public String getMessage() {
+/*    public String getMessage() {
         return message;
     }
 
@@ -24,5 +30,5 @@ public class ApplicationErrorResponse{
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
+    }*/
 }

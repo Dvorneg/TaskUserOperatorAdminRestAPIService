@@ -19,3 +19,10 @@ localhost:8080/api/app/3
 {
     "message":"ИСПРАВЛЕНА! заявка черновик User"
 }
+
+
+http://localhost:8080/api/users/search/name
+{"message":"Не найден пользователь userName:name","timestamp":0}
+
+сделать оператором:
+http://localhost:8080/api/users/1

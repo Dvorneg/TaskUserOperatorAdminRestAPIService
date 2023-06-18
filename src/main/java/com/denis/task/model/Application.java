@@ -41,10 +41,5 @@ public class Application extends BaseEntity{
         else
             return false;
     }
-/*    public Application(User user, Status status, String message, LocalDateTime applicationDateTime) {
-        this.user = user;
-        this.status = status;
-        this.message = message;
-        this.applicationDateTime = applicationDateTime;
-    }*/
+
 }
